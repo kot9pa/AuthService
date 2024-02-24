@@ -15,12 +15,15 @@
 1. Создать каталог certs:
 `mkdir certs`
 2. Сгенерировать публичный и приватный ключи:
-# Generate an RSA private key, of size 2048
+
 `openssl genrsa -out certs/private.pem 2048`
-# Extract the public key from the key pair, which can be used in a certificate
+
 `openssl rsa -in certs/private.pem -outform PEM -pubout -out certs/public.pem`
+
 3. Запустить сборку образа приложения:
+
 `docker build -t auth_service_app .`
+
 `docker-compose build`
 
 Как запустить приложение:
