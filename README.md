@@ -11,11 +11,6 @@
 2. Использование emailhunter.co для проверки указанного email адреса;
 3. Кеширование реферальных кодов с использованием in-memory БД.
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-
->>>>>>> 00a45028ef9ee2b344c4dee90a1380174d504336
 Сборка приложения:
 1. Создать каталог certs:
 `mkdir certs`
@@ -31,15 +26,4 @@
 Как запустить приложение:
 1. Установить и настроить Docker https://docs.docker.com/desktop/
 2. Выполнить `docker-compose up`
-<<<<<<< HEAD
-Как запустить приложение:
-1. Установить и настроить Docker https://docs.docker.com/desktop/
-2. Выполнить docker-compose up
-=======
-=======
-Как запустить приложение:
-1. Установить и настроить Docker https://docs.docker.com/desktop/
-2. Выполнить docker-compose up
->>>>>>> ffa37207553e94d5f73f37b6041eca84d76d6ae5
->>>>>>> 00a45028ef9ee2b344c4dee90a1380174d504336
 3. Перейти по адресу http://localhost:8080
