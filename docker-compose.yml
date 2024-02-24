@@ -8,18 +8,18 @@ services:
     ports:
       - "5432:5432"
     env_file:
-      - .env-docker 
+      - .env-non-dev
     volumes:
       - ./db-data:/var/lib/postgresql/data
 
-  # app:
-  #   build:
-  #     context: .
-  #   container_name: fastapi_app
-  #   restart: unless-stopped
-  #   env_file:
-  #     - .env-non-dev
-  #   ports:
-  #     - "8080:8080"
-  #   depends_on:
-  #     - db
+  app:
+    build:
+      context: .
+    container_name: auth_service_app
+    restart: unless-stopped
+    env_file:
+      - .env-non-dev
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db

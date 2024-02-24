@@ -8,7 +8,7 @@ from pydantic_settings import BaseSettings
 
 BASE_DIR = Path(__file__).parent.parent
 
-if load_dotenv(".env-dev"):
+if load_dotenv():
     DB_HOST = os.environ.get("DB_HOST")
     DB_PORT = os.environ.get("DB_PORT")
     DB_NAME = os.environ.get("DB_NAME")

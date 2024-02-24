@@ -12,20 +12,6 @@ from database import db_helper
 
 router = APIRouter(prefix="/users/{user_id}/codes", tags=["Codes"])
 
-# @router.get("/", response_model=List[Code])
-# async def get_codes(
-#     user_in: User = Depends(validate_current_user_from_token),
-#     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-# ):
-#     return await crud.get_codes_by_user(session=session, user_id=user_in.id)
-
-# @router.get("/", response_model=List[Code])
-# async def get_codes_by_email(
-#     user_in: User = Depends(check_exist_email),
-#     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-# ):
-#     return await crud.get_codes_by_user(session=session, user_id=user_in.id)
-
 @router.post("/", response_model=CodeCreate, status_code=status.HTTP_201_CREATED)
 async def create_code(
     code_in: Annotated[CodeCreate, Depends(check_exist_codes)],

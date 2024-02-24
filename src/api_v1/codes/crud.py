@@ -49,6 +49,6 @@ async def create_code(session: AsyncSession,
     return code
 
 async def delete_code(session: AsyncSession, user: User, code: Code) -> None:
-    user.created_code = None
+    user.created_code_id = None
     await session.delete(code)
     await session.commit()

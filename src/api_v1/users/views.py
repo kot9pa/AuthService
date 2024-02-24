@@ -12,10 +12,6 @@ from database import db_helper
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
-# @router.get("/", response_model=list[UserView])
-# async def get_users(session: AsyncSession = Depends(db_helper.scoped_session_dependency)):
-#     return await crud.get_users(session=session)
-
 @router.get("/get_referrals", response_model=list[UserView])
 async def get_registered_users(
     referrer_id: int,
