@@ -40,6 +40,6 @@ async def create_user(
     if await check_email_is_exist(session=session, email=user_in.email):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"{user_in.email} is exist",
+            detail=f"{user_in.email} is exists",
         )
     return await crud.create_user(session=session, user_in=user_in, referral_code=code)

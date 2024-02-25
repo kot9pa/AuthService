@@ -24,7 +24,7 @@ class AuthJWT(BaseModel):
     
 class DbSettings(BaseModel):
     url: str = f"postgresql+asyncpg://{DB_PATH}"
-    echo: bool = True # for debug
+    echo: bool = False # True - for debug
 
 class Settings(BaseSettings):
     api_v1_prefix: str = "/api/v1"

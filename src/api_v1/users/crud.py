@@ -21,8 +21,8 @@ async def get_referrals_by_code_id(session: AsyncSession, code_id: int) -> List[
     result = await session.scalars(stmt)
     return list(result.unique())
 
-async def get_user_by_username(session: AsyncSession, username: str) -> User | None:
-    stmt = select(User).where(User.username == username)
+async def get_user_by_email(session: AsyncSession, email: str) -> User | None:
+    stmt = select(User).where(User.email == email)
     result = await session.scalar(stmt)
     return result
 

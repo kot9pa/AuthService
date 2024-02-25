@@ -27,27 +27,27 @@ async def validate_current_user_from_token(
     )
     try:
         payload = auth_utils.decode_jwt(token)
-        username: str = payload.get("sub")
-        if username is None:
+        login: str = payload.get("sub")
+        if login is None:
             raise credentials_exception
     except InvalidTokenError:
         raise credentials_exception
     
-    user = await crud_users.get_user_by_username(session=session, username=username)
+    user = await crud_users.get_user_by_email(session=session, email=login)
     if user is None or user.id != user_id:
         raise credentials_exception
     return user
 
 async def validate_auth_user(
-    username: str,
+    email: str,
     password: str,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     unauthed_exc = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="invalid username or password",
+        detail="invalid login or password",
     )
-    user = await crud_users.get_user_by_username(session=session, username=username)
+    user = await crud_users.get_user_by_email(session=session, email=email)
     if not user:
         raise unauthed_exc
     if not auth_utils.validate_password(
@@ -96,7 +96,7 @@ async def check_code_is_used(
         if not users:
             return code
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
+            status_code=status.HTTP_409_CONFLICT,
             detail=f"{code_id=} is used",
         )
 

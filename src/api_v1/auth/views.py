@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .schemas import Token
 from database import db_helper
 from dependencies import validate_auth_user
-from .utils import *
+from .utils import encode_jwt
 
 security = HTTPBasic()
 router = APIRouter(prefix="/auth", tags=["Auth"])
@@ -20,8 +20,7 @@ async def login_for_access_token(
     user = await validate_auth_user(form_data.username, form_data.password, session)
     if user is not None:
         jwt_payload = {
-            "sub": user.username,
-            "email": user.email,
+            "sub": user.email,
         }
     token = encode_jwt(jwt_payload)
     return Token(
@@ -29,11 +28,11 @@ async def login_for_access_token(
         token_type="Bearer",
     )
 
-# async def basic_auth_credentials(
-#     credentials: Annotated[HTTPBasicCredentials, Depends(security)],
-# ):
-#     return {
-#         "message": "Hi!",
-#         "username": credentials.username,
-#         "password": credentials.password,
-#     }
+async def basic_auth_credentials(
+    credentials: Annotated[HTTPBasicCredentials, Depends(security)],
+):
+    return {
+        "message": "Hi!",
+        "username": credentials.username,
+        "password": credentials.password,
+    }

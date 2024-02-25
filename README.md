@@ -23,7 +23,7 @@
 3. Запустить сборку образа приложения:
 
 `docker build -t auth_service_app .`
-
+или
 `docker compose build`
 
 Как запустить приложение:
@@ -31,23 +31,32 @@
 2. Выполнить `docker compose up`
 3. Перейти по адресу http://localhost:8080
 
+Примечание: при старте приложения заново создаются таблицы (см. комментарии в main.py)!
 
 Swagger UI http://localhost:8080/docs
 
-Регистрация пользователя (JWT, Oauth 2.0)
+- Регистрация пользователя (JWT, Oauth 2.0)
 http://localhost:8080/docs#/Users/create_user_api_v1_users__post
 
-Аутентификация пользователя (JWT, Oauth 2.0)
+- Аутентификация пользователя (JWT, Oauth 2.0) по email (вместо username)
 http://localhost:8080/docs#/Auth/login_for_access_token_api_v1_auth__post
 
-Аутентифицированный пользователь должен иметь возможность создать свой реферальный код
+Удобнее через форму OAuth2PasswordRequestForm
+
+- Аутентифицированный пользователь должен иметь возможность создать свой реферальный код
 http://localhost:8080/docs#/Codes/create_code_api_v1_users__user_id__codes__post
 
-Аутентифицированный пользователь должен иметь возможность удалить свой реферальный код
+формат даты срока годности: YYYY-MM-DD
+Дата должна быть больше или равна текущей дате
+
+- Аутентифицированный пользователь должен иметь возможность удалить свой реферальный код
 http://localhost:8080/docs#/Codes/delete_code_api_v1_users__user_id__codes__code_id__delete
 
-Возможность получения реферального кода по email адресу реферера
+Если по коду есть зарегистрированные пользователи, то удалить код нельзя.
+
+Работают без аутентификации:
+- Возможность получения реферального кода по email адресу реферера
 http://localhost:8080/docs#/Users/get_codes_by_email_api_v1_users_get_codes_get
 
-Получение информации о рефералах по id реферера
+- Получение информации о рефералах по id реферера
 http://localhost:8080/docs#/Users/get_registered_users_api_v1_users_get_referrals_get
