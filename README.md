@@ -31,7 +31,6 @@
 2. Выполнить `docker compose up`
 3. Перейти по адресу http://localhost:8080
 
-Примечание: при старте приложения заново создаются таблицы (см. комментарии в main.py)!
 
 Swagger UI http://localhost:8080/docs
 
