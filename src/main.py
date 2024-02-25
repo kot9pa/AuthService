@@ -14,11 +14,11 @@ from api_v1 import internal_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     result = await check_connection_to_db()
-    # Uncomment this for recreate tables on startup
-    # if result['Success'] is True:
-    #     async with db_helper.engine.begin() as conn:
-    #         await conn.run_sync(Base.metadata.drop_all)
-    #         await conn.run_sync(Base.metadata.create_all)
+    # Create tables on startup
+    if result['Success'] is True:
+        async with db_helper.engine.begin() as conn:
+            # await conn.run_sync(Base.metadata.drop_all)
+            await conn.run_sync(Base.metadata.create_all)
     yield
 
 app = FastAPI(lifespan=lifespan)

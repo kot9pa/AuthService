@@ -12,18 +12,15 @@
 3. Кеширование реферальных кодов с использованием in-memory БД.
 
 Сборка приложения:
-1. Создать каталог certs:
+1. Создать каталог certs:  
 `mkdir certs`
-2. Сгенерировать публичный и приватный ключи:
-
-`openssl genrsa -out certs/private.pem 2048`
-
+2. Сгенерировать публичный и приватный ключи:  
+`openssl genrsa -out certs/private.pem 2048`  
 `openssl rsa -in certs/private.pem -outform PEM -pubout -out certs/public.pem`
 
-3. Запустить сборку образа приложения:
-
-`docker build -t auth_service_app .`
-или
+3. Запустить сборку образа приложения:  
+`docker build -t auth_service_app .`  
+или  
 `docker compose build`
 
 Как запустить приложение:
@@ -34,10 +31,10 @@
 
 Swagger UI http://localhost:8080/docs
 
-- Регистрация пользователя (JWT, Oauth 2.0)
+- Регистрация пользователя (JWT, Oauth 2.0)  
 http://localhost:8080/docs#/Users/create_user_api_v1_users__post
 
-- Аутентификация пользователя (JWT, Oauth 2.0) по email (вместо username)
+- Аутентификация пользователя (JWT, Oauth 2.0) по email (вместо username)  
 http://localhost:8080/docs#/Auth/login_for_access_token_api_v1_auth__post
 
 Удобнее через форму OAuth2PasswordRequestForm
@@ -45,7 +42,7 @@ http://localhost:8080/docs#/Auth/login_for_access_token_api_v1_auth__post
 - Аутентифицированный пользователь должен иметь возможность создать свой реферальный код
 http://localhost:8080/docs#/Codes/create_code_api_v1_users__user_id__codes__post
 
-формат даты срока годности: YYYY-MM-DD
+Формат даты срока годности: YYYY-MM-DD  
 Дата должна быть больше или равна текущей дате
 
 - Аутентифицированный пользователь должен иметь возможность удалить свой реферальный код
