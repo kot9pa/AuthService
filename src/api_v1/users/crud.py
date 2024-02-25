@@ -10,11 +10,15 @@ from api_v1.codes.models import Code
 from api_v1.auth import utils as auth_utils
 
 
-async def get_referrals_by_user_id(session: AsyncSession, user_id: int) -> User | None:
+async def get_referrals_by_user_id(session: AsyncSession, user_id: int) -> List[User] | None:
     stmt = select(User).options(joinedload(User.created_code)).where(Code.created_by_id == user_id, 
                                                                      User.registered_by_code_id == Code.id)
+    result = await session.scalars(stmt)    
+    return list(result.unique())
+
+async def get_referrals_by_code_id(session: AsyncSession, code_id: int) -> List[User] | None:
+    stmt = select(User).where(User.registered_by_code_id == code_id)
     result = await session.scalars(stmt)
-    
     return list(result.unique())
 
 async def get_user_by_username(session: AsyncSession, username: str) -> User | None:
@@ -22,9 +26,7 @@ async def get_user_by_username(session: AsyncSession, username: str) -> User | N
     result = await session.scalar(stmt)
     return result
 
-async def get_users(session: AsyncSession,
-                    email: str = None,
-) -> List[User]:
+async def get_users(session: AsyncSession, email: str = None) -> List[User]:
     if email is not None:
         stmt = select(User).where(User.email == email)
     else:

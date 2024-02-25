@@ -7,7 +7,6 @@ class CodeBase(BaseModel):
     expire: date
 
 class Code(CodeBase):
-    model_config = ConfigDict(from_attributes=True)
     id: int
 
 class CodeCreate(CodeBase):

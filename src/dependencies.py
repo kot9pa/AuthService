@@ -3,11 +3,13 @@ from typing import Annotated, List
 from fastapi import HTTPException, Path, status, Depends
 from fastapi.security import OAuth2PasswordBearer
 from jwt import InvalidTokenError
+from pydantic import EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1.users import crud as crud_users
 from api_v1.codes import crud as crud_codes
 from api_v1.codes.schemas import Code, CodeCreate
+from api_v1.users.schemas import User
 from api_v1.auth import utils as auth_utils
 from database import db_helper
 
@@ -60,69 +62,70 @@ async def validate_auth_user(
         )
     return user
 
-async def check_referral_code(
-    referral_code: str,
+async def check_code_is_not_expire(
+    referral_code: str | None = None,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-) -> Code:    
+) -> Code | None:
+    if referral_code is None:
+        return
+    
     codes = await crud_codes.get_codes(session=session, code=referral_code)
+    if not codes:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"{referral_code=} not found or expire",
+        )
+    
     for code in codes:
-        if code is not None and code.expire >= date.today():
+        if code.expire >= date.today():
             return code
 
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"{referral_code=} not found",
-    )
+async def check_code_is_used(
+    code_id: Annotated[int, Path],
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+) -> int | None:
+    codes = await crud_codes.get_codes(session=session, code=code_id)
+    if not codes:
+        raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"{code_id=} not found",
+        )
+    
+    for code in codes:
+        users = await crud_users.get_referrals_by_code_id(session=session, code_id=code.id)
+        if not users:
+            return code
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"{code_id=} is used",
+        )
 
-async def check_exist_codes(
+async def check_code_is_exist(
     user_id: Annotated[int, Path],
     referral_code: str,
     expire: date,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> Code:
+    if expire < date.today():
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Expire date incorrect",
+        )
     codes = await crud_codes.get_codes_by_user(session=session, user_id=user_id)
     for code in codes:
         if code is not None and code.expire >= date.today():
-            print(f'{code.expire=}, {date.today()=}')
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
-                detail=f"{referral_code} already exists or referral code not expire",
+                detail=f"{referral_code=} already exists or not expire",
             )
     
     return CodeCreate(code=referral_code, expire=expire)
 
-async def check_exist_email(
+async def check_email_is_exist(
     email: str,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-) -> Code:    
+) -> str | None:
     users = await crud_users.get_users(session=session, email=email)
-    if len(users) == 0:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"{email=} not found",
-        )
-    return users[0]
-
-# async def check_code_by_id(
-#     code_id: Annotated[int, Path],
-#     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-# ) -> Code:
-#     code = await crud_codes.get_code_by_user(session=session, code_id=code_id)
-#     if code is not None:        
-#         return code
-#     raise HTTPException(
-#         status_code=status.HTTP_404_NOT_FOUND,
-#         detail=f"code not found",
-#     )
-
-# async def check_user_by_id(
-#     user_id: Annotated[int, Path],
-#     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-# ) -> Code:
-#     user = await crud_users.get_user_by_id(session=session, user_id=user_id)
-#     if user is not None:
-#         return user
-#     raise HTTPException(
-#         status_code=status.HTTP_404_NOT_FOUND,
-#         detail=f"user not found",
-#     )
+    if not users:
+        return
+    return email

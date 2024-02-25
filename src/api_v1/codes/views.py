@@ -12,17 +12,17 @@ from database import db_helper
 
 router = APIRouter(prefix="/users/{user_id}/codes", tags=["Codes"])
 
-@router.post("/", response_model=CodeCreate, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=Code, status_code=status.HTTP_201_CREATED)
 async def create_code(
-    code_in: Annotated[CodeCreate, Depends(check_exist_codes)],
+    code_in: Annotated[CodeCreate, Depends(check_code_is_exist)],
     user_in: User = Depends(validate_current_user_from_token),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     return await crud.create_code(session=session, user_in=user_in, code_in=code_in)
 
-@router.delete("/")
+@router.delete("/{code_id}")
 async def delete_code(
-    code_in: Annotated[Code, Depends(check_referral_code)],
+    code_in: Annotated[Code, Depends(check_code_is_used)],
     user_in: User = Depends(validate_current_user_from_token),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
