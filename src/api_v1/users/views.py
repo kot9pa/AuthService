@@ -1,6 +1,7 @@
 from typing import Annotated, List
 from fastapi import APIRouter, HTTPException, Path, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+from pydantic_async_validation.fastapi import ensure_request_validation_errors
 
 from . import crud
 from .schemas import User, UserView, UserBase, UserCreate
@@ -37,6 +38,9 @@ async def create_user(
     code: Code = Depends(check_code_is_not_expire),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+    with ensure_request_validation_errors():
+        await user_in.model_async_validate()
+    
     if await check_email_is_exist(session=session, email=user_in.email):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

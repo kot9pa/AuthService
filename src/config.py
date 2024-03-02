@@ -28,6 +28,8 @@ class DbSettings(BaseModel):
 
 class Settings(BaseSettings):
     api_v1_prefix: str = "/api/v1"
+    email_validation_api_url: str = "https://emailvalidation.abstractapi.com/v1/"
+    email_validation_api_key: str = "971de29514094d948e2f633a3b47392e"
     db: DbSettings = DbSettings()
     auth: AuthJWT = AuthJWT()
 
