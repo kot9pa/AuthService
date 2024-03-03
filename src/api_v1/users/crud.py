@@ -38,9 +38,8 @@ async def create_user(session: AsyncSession,
                       user_in: UserBase, 
                       referral_code: Code = None,
 ) -> UserCreate:
-    user = User(**user_in.model_dump(exclude_none=True))
+    user = User(**user_in.model_dump(exclude_none=False))
     user.password = auth_utils.hash_password(user_in.password)
-    user.is_active = True
     if referral_code is not None:
         user.registered_by_code_id = referral_code.id
     session.add(user)
