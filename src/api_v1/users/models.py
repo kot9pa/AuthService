@@ -11,9 +11,10 @@ if TYPE_CHECKING:
 
 class User(Base):
     username: Mapped[str]
+    fullname: Mapped[str] = mapped_column(nullable=True)
     email: Mapped[str] = mapped_column(unique=True)
     password: Mapped[bytes]
-    is_active: Mapped[bool]
+    is_active: Mapped[bool] = mapped_column(default=True)
 
     created_code_id = mapped_column(Integer, ForeignKey("codes.id"))
     created_code = relationship("Code", foreign_keys="[User.created_code_id]")

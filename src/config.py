@@ -29,7 +29,9 @@ class DbSettings(BaseModel):
 class Settings(BaseSettings):
     api_v1_prefix: str = "/api/v1"
     email_validation_api_url: str = "https://emailvalidation.abstractapi.com/v1/"
-    email_validation_api_key: str = "971de29514094d948e2f633a3b47392e"
+    abstractapi_api_key: str = "971de29514094d948e2f633a3b47392e"
+    find_person_api_url: str = "https://person.clearbit.com/v2/people/find"
+    clearbit_api_key: str = "sk_ccbf0456a2c2838b0905ef2063ae9391"
     db: DbSettings = DbSettings()
     auth: AuthJWT = AuthJWT()
 
